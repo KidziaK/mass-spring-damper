@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BABYLON JS</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div id="forces_graph" style="position: absolute; bottom: 10vh; left: 15vw; z-index: 2; width: 20vw; height: 20vh; visibility: hidden;"></div>
+    <div id="position_graph" style="position: absolute; bottom: 10vh; left: 40vw; z-index: 2; width: 20vw; height: 20vh; visibility: hidden;"></div>
+    <div id="trajectory_graph" style="position: absolute; bottom: 10vh; left: 65vw; z-index: 2; width: 20vw; height: 20vh; visibility: hidden;"></div>
+    <canvas id="render_canvas" style="z-index: 1;"></canvas>
+    
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
