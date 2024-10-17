@@ -1,8 +1,7 @@
 import * as BABYLON from '@babylonjs/core';
 import * as GUI from '@babylonjs/gui/2D';
-import {RingBuffer} from './ring_buffer.js';
-import * as math from 'mathjs';
 import * as CanvasJS from '@canvasjs/charts';
+import * as math from 'mathjs';
 
 var dps = []; // dataPoints
 var forces_graph = new CanvasJS.Chart("forces_graph", {
@@ -258,18 +257,6 @@ var createHelix = function(scene, y0) {
 
 
 var createScene = function() {
-  var x_t_exact = new RingBuffer(50);
-  var x_t_euler = new RingBuffer(50);
-  var x_t_frog = new RingBuffer(50);
-
-  var v_t_exact = new RingBuffer(50);
-  var v_t_euler = new RingBuffer(50);
-  var v_t_frog = new RingBuffer(50);
-
-  var a_t_exact = new RingBuffer(50);
-  var a_t_euler = new RingBuffer(50);
-  var a_t_frog = new RingBuffer(50);
-
   { // default values
     var x0 = 50;
     var v0 = 0;
