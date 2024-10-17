@@ -3,64 +3,121 @@ import * as GUI from '@babylonjs/gui/2D';
 import * as CanvasJS from '@canvasjs/charts';
 import * as math from 'mathjs';
 
-var dps = []; // dataPoints
+const num_points = 200;
+
+var xt_exact = [];
+var xt_euler = [];
+var xt_frog = [];
+
+var ft_points = [];
+var gt_points = [];
+var ht_points = [];
+var wt_points = [];
+
+var trajectory_exact = [];
+var trajectory_euler = [];
+var trajectory_frog = [];
+
+
 var forces_graph = new CanvasJS.Chart("forces_graph", {
-  backgroundColor: "rgba(255, 255, 255, 0.6",
+  backgroundColor: "rgba(255, 255, 255, 0.6)",
 	title :{
-		text: "Dynamic Data"
+		text: "Forces"
 	},
 	data: [{
 		type: "line",
-		dataPoints: dps
-	}]
+    name: "f(t)",
+    showInLegend: true,
+		dataPoints: ft_points
+	},{
+		type: "line",
+    name: "g(t)",
+    showInLegend: true,
+		dataPoints: gt_points
+	},{
+		type: "line",
+    name: "h(t)",
+    showInLegend: true,
+		dataPoints: ht_points
+	},{
+		type: "line",
+    name: "w(t)",
+    showInLegend: true,
+		dataPoints: wt_points
+	}],
+  axisY:{
+    minimum: -250,
+    maximum: 250,
+  }
 });
 
 var position_graph = new CanvasJS.Chart("position_graph", {
-  backgroundColor: "rgba(255, 255, 255, 0.6",
+  backgroundColor: "rgba(255, 255, 255, 0.6)",
 	title :{
-		text: "Dynamic Data"
+		text: "Position Graph - x(t)"
 	},
 	data: [{
 		type: "line",
-		dataPoints: dps
-	}]
+    name: "Exact",
+    showInLegend: true,
+		dataPoints: xt_exact
+	},{
+		type: "line",
+    name: "Euler",
+    showInLegend: true,
+		dataPoints: xt_euler
+	},{
+		type: "line",
+    name: "Leapfrog",
+    showInLegend: true,
+		dataPoints: xt_frog
+	}],
+  axisY:{
+    minimum: -250,
+    maximum: 250,
+  }
 });
 
 var trajectory_graph = new CanvasJS.Chart("trajectory_graph", {
-  backgroundColor: "rgba(255, 255, 255, 0.6",
+  backgroundColor: "rgba(255, 255, 255, 0.6)",
 	title :{
-		text: "Dynamic Data"
+		text: "Trajectory - [x(t), v(t)]"
 	},
 	data: [{
 		type: "line",
-		dataPoints: dps
-	}]
+    name: "Exact",
+    showInLegend: true,
+		dataPoints: trajectory_exact
+	},{
+		type: "line",
+    name: "Euler",
+    showInLegend: true,
+		dataPoints: trajectory_euler
+	},{
+		type: "line",
+    name: "Leapfrog",
+    showInLegend: true,
+		dataPoints: trajectory_frog
+	}],
+  axisX: {
+    minimum: -250,
+    maximum: 250,
+    viewportMinimum: -250,
+    viewportMaximum: 250
+  },
+  axisY: {
+    minimum: -250,
+    maximum: 250,
+    viewportMinimum: -250,
+    viewportMaximum: 250
+  }
 });
 
-var xVal = 0;
-var yVal = 100; 
-var dataLength = 20;
-
-var updateGraphs = function (count) {
-
-	count = count || 1;
-
-	for (var j = 0; j < count; j++) {
-		yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
-		dps.push({
-			x: xVal,
-			y: yVal
-		});
-		xVal++;
-	}
-
-	if (dps.length > dataLength) {
-		dps.shift();
-	}
-
+var updateGraphs = function () {
 	forces_graph.render();
   position_graph.render();
   trajectory_graph.render();
+  
 };
 
 const canvas = document.getElementById("render_canvas");
@@ -608,6 +665,19 @@ var createScene = function() {
 
     t = 0;
     i = 0;
+
+    xt_exact.length = 0;
+    xt_euler.length = 0;
+    xt_frog.length = 0;
+
+    ft_points.length = 0;
+    gt_points.length = 0;
+    ht_points.length = 0;
+    wt_points.length = 0;
+    
+    trajectory_exact.length = 0;
+    trajectory_euler.length = 0;
+    trajectory_frog.length = 0;
   });
  
   advancedDynamicTexture.addControl(settings_container);
@@ -619,9 +689,6 @@ var createScene = function() {
   
 
   scene.onBeforeRenderObservable.add(() => {
-    if (i % 10 == 0) {
-      updateGraphs(dataLength);
-    }
     const h = dt * (scene.deltaTime | 0);
     t += h;
     i += 1;
@@ -631,9 +698,9 @@ var createScene = function() {
     x_t = x_exact(t, m, k, c, x0, v0, h_t, w_t);
 
     const v_t_prev = v_t;
-    v_t = (x_t - x_t_prev) / t;
+    v_t = (x_t - x_t_prev) / h;
 
-    a_t = (v_t - v_t_prev) / t;
+    a_t = (v_t - v_t_prev) / h;
 
     cleanup_helix(scene, helix_exact, sphere_exact);
     cleanup_helix(scene, helix_euler, sphere_euler);
@@ -641,6 +708,13 @@ var createScene = function() {
 
     const w_eval = math.evaluate(w_t.replace("t", t));
     const h_eval = math.evaluate(h_t.replace("t", t));
+    const f_eval = c * (w_eval - x_t);
+    const g_eval = -k * v_t;
+
+    w_t_panel.text = `w(t) = ${w_eval.toFixed(4)}`;
+    h_t_panel.text = `h(t) = ${h_eval.toFixed(4)}`;
+    ft_panel.text = `f(t) = ${f_eval.toFixed(4)}`;
+    gt_panel.text = `g(t) = ${g_eval.toFixed(4)}`;
 
     if (exact_sol.value) {
       [helix_exact, sphere_exact] = createHelix(scene, x_t);
@@ -678,6 +752,39 @@ var createScene = function() {
     xt_panel.text = `x(t) = ${x_t.toFixed(4)}`;
     vt_panel.text = `v(t) = ${v_t.toFixed(4)}`;
     at_panel.text = `a(t) = ${a_t.toFixed(4)}`;
+
+    if (i % 10 == 0) {
+      if (ft_points.lenght > num_points) {
+        ft_points.shift();
+        ht_points.shift();
+        wt_points.shift();
+        gt_points.shift();
+
+        xt_exact.shift();
+        xt_euler.shift();
+        xt_frog.shift();
+
+        trajectory_exact.shift();
+        trajectory_euler.shift();
+        trajectory_frog.shift();
+      }
+      
+
+      ft_points.push({x: t, y: f_eval});
+      ht_points.push({x: t, y: h_eval});
+      wt_points.push({x: t, y: w_eval});
+      gt_points.push({x: t, y: g_eval});
+
+      xt_exact.push({x: t, y: x_t});
+      xt_euler.push({x: t, y: xn_t_euler});
+      xt_frog.push({x: t, y: xn_t_frog});
+
+      trajectory_exact.push({x: x_t, y: v_t});
+      trajectory_euler.push({x: xn_t_euler, y: vn_t_euler});
+      trajectory_frog.push({x: xn_t_frog, y: vn_t_frog});
+
+      updateGraphs();
+    }
   });
 
   
