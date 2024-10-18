@@ -161,7 +161,7 @@ var specific_solution = function(fun, m, k, c) {
 
 var x_exact = function(t, m, k, c, x0, v0, h, w) {
   // Homogenous Equation looks like:
-  // ma + kv + cs = 0
+  // ma + kv + cx = 0
   //
   // Characteristic Polynomial Solutions are:
   // lambda = A += Bi, where
@@ -197,10 +197,6 @@ var x_exact = function(t, m, k, c, x0, v0, h, w) {
   const x_H = (t) => Math.exp(A * t) * (C * Math.cos(B * t) + D * Math.sin(B * t));
 
   return x_H(t) + x_Sh(t) + x_Sw(t);
-}
-
-var forward_euler = function() {
-
 }
 
 var cleanup_helix = function(scene, helix, sphere) {
