@@ -194,7 +194,7 @@ var x_exact = function(t, m, k, c, x0, v0, h, w) {
 
   const C = x0 - x_Sh(0) - x_Sw(0);
   const D = (A*C + v_Sh(0) + v_Sw(0) - v0) / B;
-  const x_H = (t) => Math.exp(A * t) * (C * Math.cos(B * t) + D * Math.cos(B * t));
+  const x_H = (t) => Math.exp(A * t) * (C * Math.cos(B * t) + D * Math.sin(B * t));
 
   return x_H(t) + x_Sh(t) + x_Sw(t);
 }
@@ -329,7 +329,7 @@ var createScene = function() {
     var vn_t_frog = v0;
     var an_t_frog = 0;
 
-    var dt = 0.001;
+    var dt = 0.01;
     
     var m = 1;
     var k = 0.1;  
@@ -689,7 +689,7 @@ var createScene = function() {
   
 
   scene.onBeforeRenderObservable.add(() => {
-    const h = dt * (scene.deltaTime | 0);
+    const h = dt;
     t += h;
     i += 1;
 
