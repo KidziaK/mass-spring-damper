@@ -716,8 +716,8 @@ var createScene = function() {
       [helix_exact, sphere_exact] = createHelix(scene, x_t);
     }
 
-    var x_old = xn_t_euler;
-    var v_old = vn_t_euler;
+    const x_old = xn_t_euler;
+    const v_old = vn_t_euler;
 
     xn_t_euler = x_old + h * v_old;
     vn_t_euler = v_old + h * (c * (w_eval - x_old) - k * v_old + h_eval) / m;
@@ -729,14 +729,14 @@ var createScene = function() {
     }
 
     
-    x_old = xn_t_frog;
-    v_old = vn_t_frog;
-    const a_old = an_t_frog;
+    const x_old_frog = xn_t_frog;
+    const v_old_frog = vn_t_frog;
+    const a_old_frog = an_t_frog;
 
-    an_t_frog = (c * (w_eval - x_old) - k * v_old + h_eval) / m;
+    an_t_frog = (c * (w_eval - x_old_frog) - k * v_old_frog + h_eval) / m;
     
-    xn_t_frog = x_old + v_old * h + 0.5 * a_old * h * h;
-    vn_t_frog = v_old + 0.5 * (a_old + an_t_frog) * h;
+    xn_t_frog = x_old_frog + v_old_frog * h + 0.5 * a_old_frog * h * h;
+    vn_t_frog = v_old_frog + 0.5 * (a_old_frog + an_t_frog) * h;
 
     if (frogs_sol.value) {
       [helix_frog, sphere_frog] = createHelix(scene, xn_t_frog);
