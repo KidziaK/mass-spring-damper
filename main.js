@@ -155,7 +155,7 @@ var specific_solution = function(fun, m, k, c) {
     const a = parseFloat(fun);
     const b = parseFloat(fun);
     const w = parseFloat(fun);
-    return specific_sol_constant(a, b, w, m, k, c);
+    return specific_sol_trig(a, b, w, m, k, c);
   }
 }
 
@@ -180,7 +180,12 @@ var x_exact = function(t, m, k, c, x0, v0, h, w) {
   // Now let's calculate specific solution for different values of h and w
   
   const [x_Sh, v_Sh] = specific_solution(h, m, k, c);
-  const [x_Sw, v_Sw] = specific_solution(w, m, k, c);
+  var [x_Sw, v_Sw] = specific_solution(w, m, k, c);
+
+  // Multiply by c since the RHS of the equation is
+  // cw(t) + h(t)
+  const x_Scw = (t) => c * x_Sw(t);
+  const v_Scw = (t) => c * v_Sw(t);
 
   // x_H(0) = C
   // v_H(0) = AC - BD
@@ -192,11 +197,11 @@ var x_exact = function(t, m, k, c, x0, v0, h, w) {
   // v0 = AC - BD + v_Sh(0) + v_Sw(0)
   // D = (AC + v_Sh(0) + v_Sw(0) - v0) / B
 
-  const C = x0 - x_Sh(0) - x_Sw(0);
-  const D = (A*C + v_Sh(0) + v_Sw(0) - v0) / B;
+  const C = x0 - x_Sh(0) - x_Scw(0);
+  const D = (A*C + v_Sh(0) + v_Scw(0) - v0) / B;
   const x_H = (t) => Math.exp(A * t) * (C * Math.cos(B * t) + D * Math.sin(B * t));
 
-  return x_H(t) + x_Sh(t) + x_Sw(t);
+  return x_H(t) + x_Sh(t) + x_Scw(t);
 }
 
 var cleanup_helix = function(scene, helix, sphere) {
