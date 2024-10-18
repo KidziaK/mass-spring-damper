@@ -44,11 +44,7 @@ var forces_graph = new CanvasJS.Chart("forces_graph", {
     name: "w(t)",
     showInLegend: true,
 		dataPoints: wt_points
-	}],
-  axisY:{
-    minimum: -250,
-    maximum: 250,
-  }
+	}]
 });
 
 var position_graph = new CanvasJS.Chart("position_graph", {
@@ -71,11 +67,7 @@ var position_graph = new CanvasJS.Chart("position_graph", {
     name: "Leapfrog",
     showInLegend: true,
 		dataPoints: xt_frog
-	}],
-  axisY:{
-    minimum: -250,
-    maximum: 250,
-  }
+	}]
 });
 
 var trajectory_graph = new CanvasJS.Chart("trajectory_graph", {
