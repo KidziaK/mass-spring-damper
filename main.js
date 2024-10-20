@@ -188,17 +188,17 @@ var x_exact = function(t, m, k, c, x0, v0, h, w) {
   const v_Scw = (t) => c * v_Sw(t);
 
   // x_H(0) = C
-  // v_H(0) = AC - BD
+  // v_H(0) = AC + BD
   //
   // x0 = x(0) = x_H(0) + x_Sh(0) + x_Sw(0)
   // C = x0 - x_Sh(0) - x_Sw(0)
   //
   // v0 = v(0) = v_H(0) + v_Sh(0) + v_Sw(0)
-  // v0 = AC - BD + v_Sh(0) + v_Sw(0)
-  // D = (AC + v_Sh(0) + v_Sw(0) - v0) / B
+  // v0 = AC + BD + v_Sh(0) + v_Sw(0)
+  // D = (v0 - AC - v_Sh(0) - v_Sw(0)) / B
 
   const C = x0 - x_Sh(0) - x_Scw(0);
-  const D = (A*C + v_Sh(0) + v_Scw(0) - v0) / B;
+  const D = (v0 - A*C - v_Sh(0) - v_Scw(0)) / B;
   const x_H = (t) => Math.exp(A * t) * (C * Math.cos(B * t) + D * Math.sin(B * t));
 
   return x_H(t) + x_Sh(t) + x_Scw(t);
